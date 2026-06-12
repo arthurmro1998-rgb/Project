@@ -14,8 +14,10 @@
     body {
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 1.5rem;
       background-color: blue;
       font-family: system-ui, sans-serif;
     }
@@ -24,9 +26,82 @@
       color: yellow;
       font-size: 3rem;
     }
+
+    p {
+      color: yellow;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    button {
+      padding: 0.85rem 1.75rem;
+      border: none;
+      border-radius: 8px;
+      background: yellow;
+      color: blue;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(0.95);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      color: yellow;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1>hello world</h1>
+  <p>product — $10 USD</p>
+  <button id="checkout-button" type="button">Buy now</button>
+  <p id="status-message" class="message" hidden></p>
+
+  <script>
+    const button = document.getElementById("checkout-button");
+    const statusMessage = document.getElementById("status-message");
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success") === "true") {
+      statusMessage.textContent = "Payment successful. Thank you!";
+      statusMessage.hidden = false;
+    } else if (params.get("canceled") === "true") {
+      statusMessage.textContent = "Payment canceled.";
+      statusMessage.hidden = false;
+    }
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      button.textContent = "Redirecting...";
+
+      try {
+        const response = await fetch("/api/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Could not start checkout.");
+        }
+
+        window.location.href = data.url;
+      } catch (error) {
+        statusMessage.textContent = error.message;
+        statusMessage.hidden = false;
+        button.disabled = false;
+        button.textContent = "Buy now";
+      }
+    });
+  </script>
 </body>
 </html>

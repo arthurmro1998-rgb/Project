@@ -1,0 +1,11 @@
+{
+  "name": "hello-world-payments",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "stripe": "^16.12.0"
+  }
+}
