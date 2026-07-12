@@ -57,6 +57,73 @@
       color: yellow;
       font-size: 1rem;
     }
+
+    .legal-tab {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: yellow;
+      text-decoration: underline;
+      font-size: 0.85rem;
+      cursor: pointer;
+      opacity: 0.85;
+    }
+
+    .legal-tab:hover {
+      opacity: 1;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay[hidden] {
+      display: none;
+    }
+
+    .modal {
+      background: white;
+      color: #222;
+      max-width: 560px;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 8px;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .modal h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal p {
+      color: #222;
+      opacity: 1;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #222;
+      padding: 0.25rem 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -64,6 +131,19 @@
   <p>product — $10 USD</p>
   <button id="checkout-button" type="button">Buy now</button>
   <p id="status-message" class="message" hidden></p>
+
+  <button type="button" class="legal-tab" id="legal-tab">Legal Disclaimer</button>
+
+  <div class="modal-overlay" id="legal-modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title">
+      <button type="button" class="modal-close" id="legal-modal-close" aria-label="Close">&times;</button>
+      <h2 id="legal-modal-title">Legal Disclaimer</h2>
+      <p>The information provided on this website is for general informational purposes only. All information is provided in good faith; however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on this site.</p>
+      <p>Under no circumstance shall we have any liability to you for any loss or damage of any kind incurred as a result of the use of this site or reliance on any information provided. Your use of the site and your reliance on any information is solely at your own risk.</p>
+      <p>This site may contain links to other websites or content belonging to third parties. Such external links are not investigated, monitored, or checked for accuracy, adequacy, validity, reliability, availability, or completeness by us, and we do not warrant, endorse, or assume responsibility for the accuracy or reliability of any information offered by third-party websites linked through this site.</p>
+      <p>Nothing on this site constitutes professional or legal advice, nor does any information on the site constitute a comprehensive or complete statement of the matters discussed or the law relating thereto. Consult a qualified professional before making decisions based on information found here.</p>
+    </div>
+  </div>
 
   <script>
     const button = document.getElementById("checkout-button");
@@ -100,6 +180,24 @@
         statusMessage.hidden = false;
         button.disabled = false;
         button.textContent = "Buy now";
+      }
+    });
+
+    const legalTab = document.getElementById("legal-tab");
+    const legalModalOverlay = document.getElementById("legal-modal-overlay");
+    const legalModalClose = document.getElementById("legal-modal-close");
+
+    legalTab.addEventListener("click", () => {
+      legalModalOverlay.hidden = false;
+    });
+
+    legalModalClose.addEventListener("click", () => {
+      legalModalOverlay.hidden = true;
+    });
+
+    legalModalOverlay.addEventListener("click", (event) => {
+      if (event.target === legalModalOverlay) {
+        legalModalOverlay.hidden = true;
       }
     });
   </script>

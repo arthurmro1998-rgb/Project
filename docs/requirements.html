@@ -1,0 +1,559 @@
+<title>Software Requirements Specification — Contractor Outreach Platform</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #eceef2;
+    --ink: #1c2130;
+    --ink-muted: #565e70;
+    --ink-faint: #838aa0;
+    --accent: #35519e;
+    --accent-ink: #ffffff;
+    --rule: #dadfe7;
+    --must: #9b2c2c;
+    --must-bg: #f8e6e6;
+    --should: #92600a;
+    --should-bg: #f8ecd4;
+    --could: #2f6f68;
+    --could-bg: #e2f0ee;
+    --done-bg: #e2ede2;
+    --done-ink: #2c6b3f;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12141b;
+      --surface: #1a1d26;
+      --surface-2: #21242f;
+      --ink: #e7e9ee;
+      --ink-muted: #a4abbd;
+      --ink-faint: #6b7288;
+      --accent: #8ba0e0;
+      --accent-ink: #10131c;
+      --rule: #2c3040;
+      --must: #e08b8b;
+      --must-bg: #3a2323;
+      --should: #dcae5e;
+      --should-bg: #392c17;
+      --could: #7fc4bb;
+      --could-bg: #1c3532;
+      --done-bg: #1e3324;
+      --done-ink: #7fcf93;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #12141b;
+    --surface: #1a1d26;
+    --surface-2: #21242f;
+    --ink: #e7e9ee;
+    --ink-muted: #a4abbd;
+    --ink-faint: #6b7288;
+    --accent: #8ba0e0;
+    --accent-ink: #10131c;
+    --rule: #2c3040;
+    --must: #e08b8b;
+    --must-bg: #3a2323;
+    --should: #dcae5e;
+    --should-bg: #392c17;
+    --could: #7fc4bb;
+    --could-bg: #1c3532;
+    --done-bg: #1e3324;
+    --done-ink: #7fcf93;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #eceef2;
+    --ink: #1c2130;
+    --ink-muted: #565e70;
+    --ink-faint: #838aa0;
+    --accent: #35519e;
+    --accent-ink: #ffffff;
+    --rule: #dadfe7;
+    --must: #9b2c2c;
+    --must-bg: #f8e6e6;
+    --should: #92600a;
+    --should-bg: #f8ecd4;
+    --could: #2f6f68;
+    --could-bg: #e2f0ee;
+    --done-bg: #e2ede2;
+    --done-ink: #2c6b3f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: "Iowan Old Style", "Palatino Linotype", "Sitka Text", Georgia, serif;
+    font-weight: 600;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+
+  code, .mono, .req-id, td.num, th.num {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  a { color: var(--accent); }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 780px);
+    justify-content: center;
+    gap: 3rem;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  nav.toc {
+    position: sticky;
+    top: 3rem;
+    align-self: start;
+    font-size: 0.85rem;
+  }
+
+  nav.toc .toc-label {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    margin-bottom: 0.9rem;
+  }
+
+  nav.toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  nav.toc a {
+    color: var(--ink-muted);
+    text-decoration: none;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  nav.toc a:hover { color: var(--accent); }
+
+  nav.toc .n { color: var(--ink-faint); }
+
+  main { min-width: 0; }
+
+  .cover {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    border-radius: 4px;
+    padding: 2.25rem 2.25rem 1.75rem;
+    margin-bottom: 3rem;
+  }
+
+  .cover .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .cover h1 {
+    font-size: 2rem;
+    margin: 0 0 1.4rem;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem 2rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.1rem;
+    font-size: 0.85rem;
+  }
+
+  .meta-grid dt {
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.7rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .meta-grid dd { margin: 0; color: var(--ink-muted); }
+
+  section.doc-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .doc-section h2 {
+    font-size: 1.45rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .doc-section h2 .n {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color: var(--accent);
+    font-size: 1rem;
+  }
+
+  .doc-section h3 {
+    font-size: 1.05rem;
+    margin: 1.6rem 0 0.6rem;
+  }
+
+  .doc-section p {
+    color: var(--ink-muted);
+    max-width: 66ch;
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .role-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1rem 1.1rem;
+  }
+
+  .role-card h4 {
+    margin: 0 0 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .role-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    margin: 1rem 0 1.75rem;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    background: var(--surface);
+    font-size: 0.87rem;
+  }
+
+  th {
+    text-align: left;
+    background: var(--surface-2);
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.6rem 0.9rem;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 0.65rem 0.9rem;
+    border-top: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink);
+  }
+
+  td.req-id { color: var(--accent); white-space: nowrap; }
+
+  .chip {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .chip.must { background: var(--must-bg); color: var(--must); }
+  .chip.should { background: var(--should-bg); color: var(--should); }
+  .chip.could { background: var(--could-bg); color: var(--could); }
+  .chip.done { background: var(--done-bg); color: var(--done-ink); }
+
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: 0 4px 4px 0;
+    padding: 0.9rem 1.1rem;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+  }
+
+  .callout strong { color: var(--ink); }
+
+  .risk {
+    border-left: 3px solid var(--must);
+  }
+
+  ul.reqs {
+    margin: 0.5rem 0 1.5rem;
+    padding-left: 1.2rem;
+    color: var(--ink-muted);
+  }
+
+  ul.reqs li { margin-bottom: 0.4rem; }
+
+  footer {
+    max-width: 66ch;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+  }
+
+  @media (max-width: 880px) {
+    .shell {
+      grid-template-columns: 1fr;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+    nav.toc {
+      position: static;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    nav.toc ol {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
+
+<div class="shell">
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-label">Contents</div>
+    <ol>
+      <li><a href="#overview"><span class="n">1</span> Overview</a></li>
+      <li><a href="#roles"><span class="n">2</span> User Roles</a></li>
+      <li><a href="#accounts"><span class="n">3</span> Accounts &amp; Auth</a></li>
+      <li><a href="#payments"><span class="n">4</span> Payments</a></li>
+      <li><a href="#marketplace"><span class="n">5</span> Order Fulfillment</a></li>
+      <li><a href="#storage"><span class="n">6</span> Secure Deliverables</a></li>
+      <li><a href="#static"><span class="n">7</span> Site Pages</a></li>
+      <li><a href="#data"><span class="n">8</span> Data Model</a></li>
+      <li><a href="#nfr"><span class="n">9</span> Non-Functional</a></li>
+      <li><a href="#risks"><span class="n">10</span> Risks &amp; Open Questions</a></li>
+      <li><a href="#future"><span class="n">11</span> Out of Scope / Later</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="cover">
+      <div class="kicker">Software Requirements Specification</div>
+      <h1>Contractor Outreach Platform</h1>
+      <dl class="meta-grid">
+        <div><dt>Version</dt><dd>0.1 — Draft</dd></div>
+        <div><dt>Date</dt><dd>July 12, 2026</dd></div>
+        <div><dt>Prepared for</dt><dd>Site owner</dd></div>
+        <div><dt>Status</dt><dd>For review — not yet scoped into build order</dd></div>
+      </dl>
+    </div>
+
+    <section class="doc-section" id="overview">
+      <h2><span class="n">1</span> Overview</h2>
+      <p>The platform lets a <strong>customer</strong> pay to have a <strong>contractor</strong> reach out to a specified person on Instagram, exchange messages on the customer's behalf, and hand back proof of that exchange as screenshots. The customer creates an account, places and pays for an order, and later logs in to view the delivered screenshots — visible only to them.</p>
+      <p>This document lists what the system needs to do, organized by area. Each requirement has an ID for tracking and a priority: <span class="chip must">Must</span> blocks launch, <span class="chip should">Should</span> matters soon after, <span class="chip could">Could</span> is a nice-to-have.</p>
+    </section>
+
+    <section class="doc-section" id="roles">
+      <h2><span class="n">2</span> User Roles</h2>
+      <div class="role-grid">
+        <div class="role-card">
+          <h4>Customer</h4>
+          <p>Signs up, pays for a service, and views the delivered screenshots for their own orders only.</p>
+        </div>
+        <div class="role-card">
+          <h4>Contractor</h4>
+          <p>Assigned an order, performs the Instagram outreach, and uploads screenshots as the deliverable.</p>
+        </div>
+        <div class="role-card">
+          <h4>Admin</h4>
+          <p>Assigns orders to contractors, handles disputes/refunds, and can access any account or deliverable for support.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="doc-section" id="accounts">
+      <h2><span class="n">3</span> Accounts &amp; Authentication</h2>
+      <p>Every customer and contractor needs an account. This is the foundation everything else (orders, payments, deliverables) attaches to.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="req-id">ACC-01</td><td>Create an account with email + password</td><td><span class="chip must">Must</span></td><td>Passwords hashed (bcrypt/argon2), never stored plain</td></tr>
+            <tr><td class="req-id">ACC-02</td><td>Log in / log out</td><td><span class="chip must">Must</span></td><td>Session or JWT-based; secure, httpOnly cookies</td></tr>
+            <tr><td class="req-id">ACC-03</td><td>Forgot-password / reset-password flow</td><td><span class="chip must">Must</span></td><td>Emailed, time-limited reset link/token</td></tr>
+            <tr><td class="req-id">ACC-04</td><td>Verify email address on signup</td><td><span class="chip should">Should</span></td><td>Reduces fake accounts and typo'd emails</td></tr>
+            <tr><td class="req-id">ACC-05</td><td>Edit account details (email, password, name)</td><td><span class="chip should">Should</span></td><td></td></tr>
+            <tr><td class="req-id">ACC-06</td><td>Separate contractor accounts/permissions from customer accounts</td><td><span class="chip must">Must</span></td><td>A contractor should not see customer-facing order forms and vice versa</td></tr>
+            <tr><td class="req-id">ACC-07</td><td>Admin-only internal accounts, not self-service signup</td><td><span class="chip must">Must</span></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="doc-section" id="payments">
+      <h2><span class="n">4</span> Payments</h2>
+      <p>Payment processing runs through Stripe. The site already has a one-off Stripe Checkout session wired up (<code>api/create-checkout-session.js</code>) — this section extends that into a full per-order flow.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="req-id">PAY-01</td><td>Customer pays for a service order via Stripe Checkout</td><td><span class="chip done">Implemented</span></td><td>Basic flow already exists for a single fixed-price item</td></tr>
+            <tr><td class="req-id">PAY-02</td><td>Tie each Stripe payment to a specific order record, not just a generic sale</td><td><span class="chip must">Must</span></td><td>Needed so a payment unlocks the right order's deliverable</td></tr>
+            <tr><td class="req-id">PAY-03</td><td>Verify payment success server-side via Stripe webhook, not just the success redirect</td><td><span class="chip must">Must</span></td><td>Redirect alone can be spoofed/skipped; webhook is the source of truth</td></tr>
+            <tr><td class="req-id">PAY-04</td><td>Order confirmation email / receipt after payment</td><td><span class="chip should">Should</span></td><td></td></tr>
+            <tr><td class="req-id">PAY-05</td><td>Admin can issue a refund</td><td><span class="chip should">Should</span></td><td>Via Stripe dashboard or an admin action</td></tr>
+            <tr><td class="req-id">PAY-06</td><td>Never store raw card numbers — Stripe handles all card data</td><td><span class="chip must">Must</span></td><td>Keeps the site out of PCI-DSS scope</td></tr>
+            <tr><td class="req-id">PAY-07</td><td>Pay contractors for completed orders</td><td><span class="chip could">Could</span></td><td>Manual payout at first is fine; automate later (Stripe Connect)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="doc-section" id="marketplace">
+      <h2><span class="n">5</span> Order Fulfillment Workflow</h2>
+      <p>The core loop: a customer requests outreach to a specific Instagram account, pays, a contractor performs it, and the customer receives proof.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="req-id">MKT-01</td><td>Customer submits an order specifying the target Instagram account and what the message should say/accomplish</td><td><span class="chip must">Must</span></td><td></td></tr>
+            <tr><td class="req-id">MKT-02</td><td>Order sits in a queue until assigned to a contractor</td><td><span class="chip must">Must</span></td><td>Manual admin assignment is fine to start</td></tr>
+            <tr><td class="req-id">MKT-03</td><td>Contractor sees their assigned orders and marks progress (accepted → in progress → delivered)</td><td><span class="chip must">Must</span></td><td></td></tr>
+            <tr><td class="req-id">MKT-04</td><td>Contractor uploads one or more screenshots as the completed deliverable</td><td><span class="chip must">Must</span></td><td></td></tr>
+            <tr><td class="req-id">MKT-05</td><td>Customer is notified (email/in-app) when their deliverable is ready</td><td><span class="chip should">Should</span></td><td></td></tr>
+            <tr><td class="req-id">MKT-06</td><td>Customer can message support or flag an order as unsatisfactory</td><td><span class="chip could">Could</span></td><td>Feeds into refund/dispute handling</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="doc-section" id="storage">
+      <h2><span class="n">6</span> Secure Deliverable Storage</h2>
+      <p>Screenshots are the product the customer paid for. They need to be private by default — visible to the owning customer and admins, invisible to everyone else, including other customers and contractors not assigned to that order.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="req-id">SEC-01</td><td>Screenshots stored in private object storage (not a public folder or public bucket)</td><td><span class="chip must">Must</span></td><td>e.g. S3/Cloud Storage with public access blocked</td></tr>
+            <tr><td class="req-id">SEC-02</td><td>Access only via short-lived, signed URLs issued to the authenticated owner of that order</td><td><span class="chip must">Must</span></td><td>No permanent public links</td></tr>
+            <tr><td class="req-id">SEC-03</td><td>Every deliverable is linked to exactly one order and one customer account</td><td><span class="chip must">Must</span></td><td>Access checks always go through this link</td></tr>
+            <tr><td class="req-id">SEC-04</td><td>Server checks the logged-in user owns the order before generating a signed URL</td><td><span class="chip must">Must</span></td><td>Never trust an order ID passed from the client alone</td></tr>
+            <tr><td class="req-id">SEC-05</td><td>Log who viewed/downloaded a deliverable and when</td><td><span class="chip should">Should</span></td><td>Useful for disputes and abuse investigation</td></tr>
+            <tr><td class="req-id">SEC-06</td><td>Files encrypted at rest</td><td><span class="chip should">Should</span></td><td>Most managed storage does this by default — confirm it's on</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="doc-section" id="static">
+      <h2><span class="n">7</span> Site Pages</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="req-id">SITE-01</td><td>Legal Disclaimer, reachable via a link and shown in a popup</td><td><span class="chip done">Implemented</span></td><td>Live now in <code>index.html</code></td></tr>
+            <tr><td class="req-id">SITE-02</td><td>About Us page</td><td><span class="chip should">Should</span></td><td>Content to be drafted later — placeholder is fine for now</td></tr>
+            <tr><td class="req-id">SITE-03</td><td>Terms of Service / Contractor Agreement</td><td><span class="chip must">Must</span></td><td>Separate from the disclaimer — see risk note below</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="doc-section" id="data">
+      <h2><span class="n">8</span> Data Model</h2>
+      <p>You don't need to know database internals to know what needs to be tracked. Roughly, five kinds of records:</p>
+      <ul class="reqs">
+        <li><strong>Users</strong> — email, hashed password, role (customer/contractor/admin), verification status.</li>
+        <li><strong>Orders</strong> — which customer, target Instagram account, instructions, status, assigned contractor, timestamps.</li>
+        <li><strong>Payments</strong> — Stripe payment/session ID, order it belongs to, amount, status. No card numbers ever live here.</li>
+        <li><strong>Deliverables</strong> — pointer/reference to each screenshot file in storage, which order it belongs to, upload timestamp.</li>
+        <li><strong>Access log</strong> — who viewed which deliverable, when (supports SEC-05).</li>
+      </ul>
+      <div class="callout"><strong>In practice:</strong> a managed relational database (e.g. Postgres) for Users/Orders/Payments/Access-log, plus a private object storage bucket for the actual image files, with the database holding just a reference to each file. This is the standard split — small structured records in the database, large binary files in storage built for them.</div>
+    </section>
+
+    <section class="doc-section" id="nfr">
+      <h2><span class="n">9</span> Non-Functional Requirements</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th></tr></thead>
+          <tbody>
+            <tr><td class="req-id">NFR-01</td><td>All traffic over HTTPS</td><td><span class="chip must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-02</td><td>Passwords and secrets never appear in logs or client-side code</td><td><span class="chip must">Must</span></td></tr>
+            <tr><td class="req-id">NFR-03</td><td>Environment secrets (Stripe keys, DB credentials) kept out of source control</td><td><span class="chip done">Implemented</span></td></tr>
+            <tr><td class="req-id">NFR-04</td><td>Regular backups of the database and file storage</td><td><span class="chip should">Should</span></td></tr>
+            <tr><td class="req-id">NFR-05</td><td>Basic rate limiting on login and password-reset endpoints</td><td><span class="chip should">Should</span></td></tr>
+            <tr><td class="req-id">NFR-06</td><td>Clear data-retention policy for how long screenshots are kept</td><td><span class="chip could">Could</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="doc-section" id="risks">
+      <h2><span class="n">10</span> Risks &amp; Open Questions</h2>
+      <div class="callout risk">
+        <strong>Instagram's terms of use.</strong> Instagram's platform policy restricts automated messaging and paid outreach services conducted through third-party accounts. Since contractors are messaging targets on a customer's behalf, there's real risk of account bans (and possibly bigger platform/legal exposure) regardless of whether the sending is manual or automated. Worth a short conversation with a lawyer before this goes live, and worth deciding now whether contractors use their own accounts or customer-provided accounts.
+      </div>
+      <div class="callout risk">
+        <strong>No guarantee of outcome.</strong> The Terms of Service should be explicit that the contractor can attempt outreach but cannot guarantee a response from the target, and that the deliverable is the message screenshots themselves, not any particular outcome.
+      </div>
+      <div class="callout">
+        <strong>Contractor vetting.</strong> Not yet defined — decide whether contractors apply, get manually approved by an admin, and/or sign an independent-contractor agreement before receiving orders.
+      </div>
+    </section>
+
+    <section class="doc-section" id="future">
+      <h2><span class="n">11</span> Out of Scope for Now</h2>
+      <p>Explicitly deferred, not forgotten:</p>
+      <ul class="reqs">
+        <li>About Us page content</li>
+        <li>Automated contractor payouts</li>
+        <li>In-app messaging between customer and contractor</li>
+        <li>Multiple concurrent services/products beyond the single Instagram-outreach offering</li>
+      </ul>
+    </section>
+
+    <footer>
+      Draft requirements list — a starting point for scoping the build, not a finished spec. Priorities and open questions above should be confirmed before implementation begins.
+    </footer>
+  </main>
+</div>
