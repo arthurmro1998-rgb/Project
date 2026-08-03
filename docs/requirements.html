@@ -420,8 +420,8 @@
             <tr><td class="req-id">ACC-01</td><td>Create an account with email + password</td><td><span class="chip must">Must</span></td><td>Passwords hashed (bcrypt/argon2), never stored plain</td></tr>
             <tr><td class="req-id">ACC-02</td><td>Log in / log out</td><td><span class="chip must">Must</span></td><td>Session or JWT-based; secure, httpOnly cookies</td></tr>
             <tr><td class="req-id">ACC-03</td><td>Forgot-password / reset-password flow</td><td><span class="chip must">Must</span></td><td>Emailed, time-limited reset link/token</td></tr>
-            <tr><td class="req-id">ACC-04</td><td>Verify email address on signup</td><td><span class="chip should">Should</span></td><td>Reduces fake accounts and typo'd emails</td></tr>
-            <tr><td class="req-id">ACC-05</td><td>Edit account details (email, password, name)</td><td><span class="chip should">Should</span></td><td></td></tr>
+            <tr><td class="req-id">ACC-04</td><td>Verify email address on signup</td><td><span class="chip must">Must</span></td><td>Reduces fake accounts and typo'd emails</td></tr>
+            <tr><td class="req-id">ACC-05</td><td>Edit account details (email, password, name)</td><td><span class="chip could">Could</span></td><td></td></tr>
             <tr><td class="req-id">ACC-06</td><td>Separate contractor accounts/permissions from customer accounts</td><td><span class="chip must">Must</span></td><td>A contractor should not see customer-facing order forms and vice versa</td></tr>
             <tr><td class="req-id">ACC-07</td><td>Admin-only internal accounts, not self-service signup</td><td><span class="chip must">Must</span></td><td></td></tr>
           </tbody>
@@ -436,11 +436,11 @@
         <table>
           <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Notes</th></tr></thead>
           <tbody>
-            <tr><td class="req-id">PAY-01</td><td>Customer pays for a service order via Stripe Checkout</td><td><span class="chip done">Implemented</span></td><td>Basic flow already exists for a single fixed-price item</td></tr>
+            <tr><td class="req-id">PAY-01</td><td>Customer pays for a service order via Stripe Checkout</td><td><span class="chip must">Must</span> <span class="chip done">Implemented</span></td><td>Basic flow already exists for a single fixed-price item</td></tr>
             <tr><td class="req-id">PAY-02</td><td>Tie each Stripe payment to a specific order record, not just a generic sale</td><td><span class="chip must">Must</span></td><td>Needed so a payment unlocks the right order's deliverable</td></tr>
             <tr><td class="req-id">PAY-03</td><td>Verify payment success server-side via Stripe webhook, not just the success redirect</td><td><span class="chip must">Must</span></td><td>Redirect alone can be spoofed/skipped; webhook is the source of truth</td></tr>
-            <tr><td class="req-id">PAY-04</td><td>Order confirmation email / receipt after payment</td><td><span class="chip should">Should</span></td><td></td></tr>
-            <tr><td class="req-id">PAY-05</td><td>Admin can issue a refund</td><td><span class="chip should">Should</span></td><td>Via Stripe dashboard or an admin action</td></tr>
+            <tr><td class="req-id">PAY-04</td><td>Order confirmation email / receipt after payment</td><td><span class="chip must">Must</span></td><td></td></tr>
+            <tr><td class="req-id">PAY-05</td><td>Admin can issue a refund</td><td><span class="chip could">Could</span></td><td>Via Stripe dashboard or an admin action</td></tr>
             <tr><td class="req-id">PAY-06</td><td>Never store raw card numbers — Stripe handles all card data</td><td><span class="chip must">Must</span></td><td>Keeps the site out of PCI-DSS scope</td></tr>
             <tr><td class="req-id">PAY-07</td><td>Pay contractors for completed orders</td><td><span class="chip could">Could</span></td><td>Manual payout at first is fine; automate later (Stripe Connect)</td></tr>
           </tbody>
@@ -477,8 +477,8 @@
             <tr><td class="req-id">SEC-02</td><td>Access only via short-lived, signed URLs issued to the authenticated owner of that order</td><td><span class="chip must">Must</span></td><td>No permanent public links</td></tr>
             <tr><td class="req-id">SEC-03</td><td>Every deliverable is linked to exactly one order and one customer account</td><td><span class="chip must">Must</span></td><td>Access checks always go through this link</td></tr>
             <tr><td class="req-id">SEC-04</td><td>Server checks the logged-in user owns the order before generating a signed URL</td><td><span class="chip must">Must</span></td><td>Never trust an order ID passed from the client alone</td></tr>
-            <tr><td class="req-id">SEC-05</td><td>Log who viewed/downloaded a deliverable and when</td><td><span class="chip should">Should</span></td><td>Useful for disputes and abuse investigation</td></tr>
-            <tr><td class="req-id">SEC-06</td><td>Files encrypted at rest</td><td><span class="chip should">Should</span></td><td>Most managed storage does this by default — confirm it's on</td></tr>
+            <tr><td class="req-id">SEC-05</td><td>Log who viewed/downloaded a deliverable and when</td><td><span class="chip must">Must</span></td><td>Useful for disputes and abuse investigation</td></tr>
+            <tr><td class="req-id">SEC-06</td><td>Files encrypted at rest</td><td><span class="chip must">Must</span></td><td>Most managed storage does this by default — confirm it's on</td></tr>
           </tbody>
         </table>
       </div>
@@ -490,7 +490,7 @@
         <table>
           <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Notes</th></tr></thead>
           <tbody>
-            <tr><td class="req-id">SITE-01</td><td>Legal Disclaimer, reachable via a link and shown in a popup</td><td><span class="chip done">Implemented</span></td><td>Live now in <code>index.html</code></td></tr>
+            <tr><td class="req-id">SITE-01</td><td>Legal Disclaimer, reachable via a link and shown in a popup</td><td><span class="chip must">Must</span> <span class="chip done">Implemented</span></td><td>Live now in <code>index.html</code></td></tr>
             <tr><td class="req-id">SITE-02</td><td>About Us page</td><td><span class="chip should">Should</span></td><td>Content to be drafted later — placeholder is fine for now</td></tr>
             <tr><td class="req-id">SITE-03</td><td>Terms of Service / Contractor Agreement</td><td><span class="chip must">Must</span></td><td>Separate from the disclaimer — see risk note below</td></tr>
           </tbody>
@@ -519,7 +519,7 @@
           <tbody>
             <tr><td class="req-id">NFR-01</td><td>All traffic over HTTPS</td><td><span class="chip must">Must</span></td></tr>
             <tr><td class="req-id">NFR-02</td><td>Passwords and secrets never appear in logs or client-side code</td><td><span class="chip must">Must</span></td></tr>
-            <tr><td class="req-id">NFR-03</td><td>Environment secrets (Stripe keys, DB credentials) kept out of source control</td><td><span class="chip done">Implemented</span></td></tr>
+            <tr><td class="req-id">NFR-03</td><td>Environment secrets (Stripe keys, DB credentials) kept out of source control</td><td><span class="chip must">Must</span> <span class="chip done">Implemented</span></td></tr>
             <tr><td class="req-id">NFR-04</td><td>Regular backups of the database and file storage</td><td><span class="chip should">Should</span></td></tr>
             <tr><td class="req-id">NFR-05</td><td>Basic rate limiting on login and password-reset endpoints</td><td><span class="chip should">Should</span></td></tr>
             <tr><td class="req-id">NFR-06</td><td>Clear data-retention policy for how long screenshots are kept</td><td><span class="chip could">Could</span></td></tr>
