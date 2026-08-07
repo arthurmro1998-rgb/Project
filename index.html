@@ -401,13 +401,19 @@
           authForms.hidden = true;
           accountStatus.hidden = false;
           accountStatusText.textContent = `Signed in as ${data.user.email} (${data.user.role})`;
+          button.disabled = false;
+          button.textContent = "Buy now";
         } else {
           authForms.hidden = false;
           accountStatus.hidden = true;
+          button.disabled = true;
+          button.textContent = "Log in to buy";
         }
       } catch (error) {
         authForms.hidden = false;
         accountStatus.hidden = true;
+        button.disabled = true;
+        button.textContent = "Log in to buy";
       }
     }
 
