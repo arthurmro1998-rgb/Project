@@ -1,6 +1,7 @@
 const { getPool, ensureSchema } = require("../lib/db");
 const {
   hashPassword,
+  validatePassword,
   generateToken,
   hashToken,
   createSession,
@@ -18,13 +19,20 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { email, password, name } = req.body || {};
+  const { email, password, firstName, lastName } = req.body || {};
 
   if (!email || !EMAIL_RE.test(email)) {
     return res.status(400).json({ error: "A valid email is required." });
   }
-  if (!password || password.length < 8) {
-    return res.status(400).json({ error: "Password must be at least 8 characters." });
+  if (!firstName || !firstName.trim()) {
+    return res.status(400).json({ error: "First name is required." });
+  }
+  if (!lastName || !lastName.trim()) {
+    return res.status(400).json({ error: "Last name is required." });
+  }
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    return res.status(400).json({ error: passwordError });
   }
 
   await ensureSchema();
@@ -40,10 +48,10 @@ module.exports = async (req, res) => {
   // accounts are created only via the admin-only endpoint (ACC-06, ACC-07).
   const passwordHash = await hashPassword(password);
   const { rows } = await db.query(
-    `INSERT INTO users (email, password_hash, name, role)
-     VALUES ($1, $2, $3, 'customer')
-     RETURNING id, email, name, role, email_verified`,
-    [normalizedEmail, passwordHash, name || null]
+    `INSERT INTO users (email, password_hash, first_name, last_name, role)
+     VALUES ($1, $2, $3, $4, 'customer')
+     RETURNING id, email, first_name, last_name, role, email_verified`,
+    [normalizedEmail, passwordHash, firstName.trim(), lastName.trim()]
   );
   const user = rows[0];
 
