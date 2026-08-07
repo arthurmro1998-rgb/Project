@@ -11,6 +11,11 @@
       box-sizing: border-box;
     }
 
+    /* Elements also given `display: flex` below still need [hidden] to win. */
+    [hidden] {
+      display: none !important;
+    }
+
     body {
       min-height: 100vh;
       display: flex;
@@ -20,6 +25,7 @@
       gap: 1.5rem;
       background-color: blue;
       font-family: system-ui, sans-serif;
+      padding: 2rem 1rem;
     }
 
     h1 {
@@ -56,6 +62,94 @@
     .message {
       color: yellow;
       font-size: 1rem;
+    }
+
+    #main-view,
+    #verify-view,
+    #reset-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* Account widget */
+    .auth-card {
+      background: white;
+      color: #222;
+      border-radius: 8px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .auth-card form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .auth-card input {
+      padding: 0.65rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color: #222;
+    }
+
+    .auth-card button[type="submit"] {
+      margin-top: 0.25rem;
+      width: 100%;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: blue;
+      text-decoration: underline;
+      font-size: 0.85rem;
+      font-weight: 400;
+      cursor: pointer;
+      padding: 0.35rem 0;
+      display: block;
+    }
+
+    .auth-error {
+      color: #b00020;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .auth-info {
+      color: #1a5c1a;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    #account-status {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    #account-status-text {
+      color: #222;
+      font-size: 0.95rem;
+      opacity: 1;
+      text-align: center;
+    }
+
+    #reset-view .auth-card,
+    #verify-view p {
+      max-width: 360px;
+    }
+
+    #verify-view p,
+    #reset-message {
+      color: white;
+      text-align: center;
+      max-width: 360px;
     }
 
     .legal-tab {
@@ -127,10 +221,70 @@
   </style>
 </head>
 <body>
-  <h1>hello world</h1>
-  <p>product — $10 USD</p>
-  <button id="checkout-button" type="button">Buy now</button>
-  <p id="status-message" class="message" hidden></p>
+  <div id="main-view" hidden>
+    <h1>hello world</h1>
+
+    <div class="auth-card" id="account-widget">
+      <div id="auth-forms">
+        <div id="login-form-wrap">
+          <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="submit">Log in</button>
+          </form>
+          <button type="button" class="link-btn" id="show-signup">Need an account? Sign up</button>
+          <button type="button" class="link-btn" id="show-forgot">Forgot password?</button>
+        </div>
+
+        <div id="signup-form-wrap" hidden>
+          <form id="signup-form">
+            <input type="text" id="signup-name" placeholder="Name (optional)">
+            <input type="email" id="signup-email" placeholder="Email" required>
+            <input type="password" id="signup-password" placeholder="Password (min 8 characters)" minlength="8" required>
+            <button type="submit">Sign up</button>
+          </form>
+          <button type="button" class="link-btn" id="show-login-from-signup">Already have an account? Log in</button>
+        </div>
+
+        <div id="forgot-form-wrap" hidden>
+          <form id="forgot-form">
+            <input type="email" id="forgot-email" placeholder="Email" required>
+            <button type="submit">Send reset link</button>
+          </form>
+          <button type="button" class="link-btn" id="show-login-from-forgot">Back to log in</button>
+        </div>
+
+        <p class="auth-error" id="auth-error" hidden></p>
+        <p class="auth-info" id="auth-info" hidden></p>
+      </div>
+
+      <div id="account-status" hidden>
+        <p id="account-status-text"></p>
+        <button type="button" id="logout-button">Log out</button>
+      </div>
+    </div>
+
+    <p>product — $10 USD</p>
+    <button id="checkout-button" type="button">Buy now</button>
+    <p id="status-message" class="message" hidden></p>
+  </div>
+
+  <div id="verify-view" hidden>
+    <h1>Verify your email</h1>
+    <p id="verify-message">Verifying&hellip;</p>
+  </div>
+
+  <div id="reset-view" hidden>
+    <h1>Reset your password</h1>
+    <div class="auth-card">
+      <form id="reset-form">
+        <input type="password" id="reset-password-input" placeholder="New password (min 8 characters)" minlength="8" required>
+        <button type="submit">Reset password</button>
+      </form>
+      <p class="auth-error" id="reset-error" hidden></p>
+    </div>
+    <p id="reset-message" hidden></p>
+  </div>
 
   <button type="button" class="legal-tab" id="legal-tab">Legal Disclaimer</button>
 
@@ -146,6 +300,7 @@
   </div>
 
   <script>
+    // ---------- Checkout ----------
     const button = document.getElementById("checkout-button");
     const statusMessage = document.getElementById("status-message");
 
@@ -183,6 +338,7 @@
       }
     });
 
+    // ---------- Legal disclaimer modal ----------
     const legalTab = document.getElementById("legal-tab");
     const legalModalOverlay = document.getElementById("legal-modal-overlay");
     const legalModalClose = document.getElementById("legal-modal-close");
@@ -200,6 +356,202 @@
         legalModalOverlay.hidden = true;
       }
     });
+
+    // ---------- Account widget (login / signup / forgot password) ----------
+    const authForms = document.getElementById("auth-forms");
+    const accountStatus = document.getElementById("account-status");
+    const accountStatusText = document.getElementById("account-status-text");
+    const authError = document.getElementById("auth-error");
+    const authInfo = document.getElementById("auth-info");
+
+    const loginFormWrap = document.getElementById("login-form-wrap");
+    const signupFormWrap = document.getElementById("signup-form-wrap");
+    const forgotFormWrap = document.getElementById("forgot-form-wrap");
+
+    function showAuthPanel(panel) {
+      loginFormWrap.hidden = panel !== "login";
+      signupFormWrap.hidden = panel !== "signup";
+      forgotFormWrap.hidden = panel !== "forgot";
+      authError.hidden = true;
+      authInfo.hidden = true;
+    }
+
+    document.getElementById("show-signup").addEventListener("click", () => showAuthPanel("signup"));
+    document.getElementById("show-forgot").addEventListener("click", () => showAuthPanel("forgot"));
+    document.getElementById("show-login-from-signup").addEventListener("click", () => showAuthPanel("login"));
+    document.getElementById("show-login-from-forgot").addEventListener("click", () => showAuthPanel("login"));
+
+    function showAuthError(message) {
+      authInfo.hidden = true;
+      authError.textContent = message;
+      authError.hidden = false;
+    }
+
+    function showAuthInfo(message) {
+      authError.hidden = true;
+      authInfo.textContent = message;
+      authInfo.hidden = false;
+    }
+
+    async function refreshAccountStatus() {
+      try {
+        const response = await fetch("/api/me");
+        if (response.ok) {
+          const data = await response.json();
+          authForms.hidden = true;
+          accountStatus.hidden = false;
+          accountStatusText.textContent = `Signed in as ${data.user.email} (${data.user.role})`;
+        } else {
+          authForms.hidden = false;
+          accountStatus.hidden = true;
+        }
+      } catch (error) {
+        authForms.hidden = false;
+        accountStatus.hidden = true;
+      }
+    }
+
+    document.getElementById("login-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not log in.");
+        await refreshAccountStatus();
+      } catch (error) {
+        showAuthError(error.message);
+      }
+    });
+
+    document.getElementById("signup-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const name = document.getElementById("signup-name").value;
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+
+      try {
+        const response = await fetch("/api/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not create account.");
+        await refreshAccountStatus();
+      } catch (error) {
+        showAuthError(error.message);
+      }
+    });
+
+    document.getElementById("forgot-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const email = document.getElementById("forgot-email").value;
+
+      try {
+        const response = await fetch("/api/request-password-reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Could not send reset link.");
+        showAuthInfo(data.message || "If an account exists for that email, a reset link has been sent.");
+      } catch (error) {
+        showAuthError(error.message);
+      }
+    });
+
+    document.getElementById("logout-button").addEventListener("click", async () => {
+      await fetch("/api/logout", { method: "POST" });
+      await refreshAccountStatus();
+      showAuthPanel("login");
+    });
+
+    // ---------- Email verification landing (/verify-email?token=...) ----------
+    async function runVerifyEmail() {
+      const verifyMessage = document.getElementById("verify-message");
+      const token = new URLSearchParams(window.location.search).get("token");
+
+      if (!token) {
+        verifyMessage.textContent = "Missing verification token.";
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/verify-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+        const data = await response.json();
+        verifyMessage.textContent = response.ok
+          ? (data.message || "Email verified.")
+          : (data.error || "This verification link is invalid or has expired.");
+      } catch (error) {
+        verifyMessage.textContent = "Something went wrong verifying your email.";
+      }
+    }
+
+    // ---------- Password reset landing (/reset-password?token=...) ----------
+    function runResetPasswordView() {
+      const resetForm = document.getElementById("reset-form");
+      const resetError = document.getElementById("reset-error");
+      const resetMessage = document.getElementById("reset-message");
+      const token = new URLSearchParams(window.location.search).get("token");
+
+      if (!token) {
+        resetForm.hidden = true;
+        resetMessage.textContent = "Missing reset token. Request a new reset link.";
+        resetMessage.hidden = false;
+        return;
+      }
+
+      resetForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const password = document.getElementById("reset-password-input").value;
+
+        try {
+          const response = await fetch("/api/reset-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token, password }),
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "Could not reset password.");
+
+          resetForm.hidden = true;
+          resetMessage.textContent = `${data.message || "Password updated."} `;
+          resetMessage.hidden = false;
+        } catch (error) {
+          resetError.textContent = error.message;
+          resetError.hidden = false;
+        }
+      });
+    }
+
+    // ---------- View routing ----------
+    const mainView = document.getElementById("main-view");
+    const verifyView = document.getElementById("verify-view");
+    const resetView = document.getElementById("reset-view");
+    const path = window.location.pathname;
+
+    if (path === "/verify-email") {
+      verifyView.hidden = false;
+      runVerifyEmail();
+    } else if (path === "/reset-password") {
+      resetView.hidden = false;
+      runResetPasswordView();
+    } else {
+      mainView.hidden = false;
+      refreshAccountStatus();
+    }
   </script>
 </body>
 </html>
