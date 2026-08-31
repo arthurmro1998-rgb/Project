@@ -1,5 +1,5 @@
 const { getPool, ensureSchema } = require("../lib/db");
-const { hashPassword, hashToken, destroyAllSessionsForUser } = require("../lib/auth");
+const { hashPassword, validatePassword, hashToken, destroyAllSessionsForUser } = require("../lib/auth");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -11,8 +11,9 @@ module.exports = async (req, res) => {
   if (!token || !password) {
     return res.status(400).json({ error: "Token and new password are required." });
   }
-  if (password.length < 8) {
-    return res.status(400).json({ error: "Password must be at least 8 characters." });
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    return res.status(400).json({ error: passwordError });
   }
 
   await ensureSchema();

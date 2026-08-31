@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
   const normalizedEmail = email.toLowerCase();
 
   const { rows } = await db.query(
-    "SELECT id, email, name, role, email_verified, password_hash FROM users WHERE email = $1",
+    "SELECT id, email, first_name, last_name, role, email_verified, password_hash FROM users WHERE email = $1",
     [normalizedEmail]
   );
   const user = rows[0];

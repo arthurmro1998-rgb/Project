@@ -1,5 +1,5 @@
 const { getPool, ensureSchema } = require("../../lib/db");
-const { hashPassword, getSessionUser } = require("../../lib/auth");
+const { hashPassword, validatePassword, getSessionUser } = require("../../lib/auth");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ALLOWED_ROLES = ["customer", "contractor", "admin"];
@@ -20,13 +20,20 @@ module.exports = async (req, res) => {
     return res.status(403).json({ error: "Admin access required." });
   }
 
-  const { email, password, name, role } = req.body || {};
+  const { email, password, firstName, lastName, role } = req.body || {};
 
   if (!email || !EMAIL_RE.test(email)) {
     return res.status(400).json({ error: "A valid email is required." });
   }
-  if (!password || password.length < 8) {
-    return res.status(400).json({ error: "Password must be at least 8 characters." });
+  if (!firstName || !firstName.trim()) {
+    return res.status(400).json({ error: "First name is required." });
+  }
+  if (!lastName || !lastName.trim()) {
+    return res.status(400).json({ error: "Last name is required." });
+  }
+  const passwordError = validatePassword(password);
+  if (passwordError) {
+    return res.status(400).json({ error: passwordError });
   }
   if (!ALLOWED_ROLES.includes(role)) {
     return res.status(400).json({ error: `Role must be one of: ${ALLOWED_ROLES.join(", ")}.` });
@@ -40,10 +47,10 @@ module.exports = async (req, res) => {
 
   const passwordHash = await hashPassword(password);
   const { rows } = await db.query(
-    `INSERT INTO users (email, password_hash, name, role, email_verified)
-     VALUES ($1, $2, $3, $4, TRUE)
-     RETURNING id, email, name, role, email_verified`,
-    [normalizedEmail, passwordHash, name || null, role]
+    `INSERT INTO users (email, password_hash, first_name, last_name, role, email_verified)
+     VALUES ($1, $2, $3, $4, $5, TRUE)
+     RETURNING id, email, first_name, last_name, role, email_verified`,
+    [normalizedEmail, passwordHash, firstName.trim(), lastName.trim(), role]
   );
 
   return res.status(201).json({ user: rows[0] });

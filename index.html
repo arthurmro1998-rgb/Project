@@ -238,9 +238,10 @@
 
         <div id="signup-form-wrap" hidden>
           <form id="signup-form">
-            <input type="text" id="signup-name" placeholder="Name (optional)">
+            <input type="text" id="signup-first-name" placeholder="First name" required>
+            <input type="text" id="signup-last-name" placeholder="Last name" required>
             <input type="email" id="signup-email" placeholder="Email" required>
-            <input type="password" id="signup-password" placeholder="Password (min 8 characters)" minlength="8" required>
+            <input type="password" id="signup-password" placeholder="Password (12+ chars, upper &amp; lowercase, number or symbol)" minlength="12" required>
             <button type="submit">Sign up</button>
           </form>
           <button type="button" class="link-btn" id="show-login-from-signup">Already have an account? Log in</button>
@@ -278,7 +279,7 @@
     <h1>Reset your password</h1>
     <div class="auth-card">
       <form id="reset-form">
-        <input type="password" id="reset-password-input" placeholder="New password (min 8 characters)" minlength="8" required>
+        <input type="password" id="reset-password-input" placeholder="New password (12+ chars, upper &amp; lowercase, number or symbol)" minlength="12" required>
         <button type="submit">Reset password</button>
       </form>
       <p class="auth-error" id="reset-error" hidden></p>
@@ -438,7 +439,8 @@
 
     document.getElementById("signup-form").addEventListener("submit", async (event) => {
       event.preventDefault();
-      const name = document.getElementById("signup-name").value;
+      const firstName = document.getElementById("signup-first-name").value;
+      const lastName = document.getElementById("signup-last-name").value;
       const email = document.getElementById("signup-email").value;
       const password = document.getElementById("signup-password").value;
 
@@ -446,7 +448,7 @@
         const response = await fetch("/api/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ firstName, lastName, email, password }),
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || "Could not create account.");
